@@ -8,7 +8,10 @@ require 'rubygems'
 #require '/var/lib/gems/1.9.1/gems/twitter-5.16.0/lib/twitter.rb'
 require 'twitter'
 #require 'byebug'
-include __dir__ + '/clientConf.rb'
+
+str = __dir__ + '/clientConf.rb'
+
+require str
 
 
 client = Twitter::REST::Client.new($clientConf)
