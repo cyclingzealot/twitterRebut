@@ -7,7 +7,7 @@ puts
 require 'rubygems'
 #require '/var/lib/gems/1.9.1/gems/twitter-5.16.0/lib/twitter.rb'
 require 'twitter'
-#require 'byebug'
+require 'byebug'
 
 appDir = File.expand_path("~") + '/.twitterRebutAssist/'
 
@@ -28,7 +28,7 @@ else
 end
 
 
-sr = client.search("http://www.conservative.ca/cpc/protect-your-vote/")
+sr = client.search("http://www.conservative.ca/cpc/protect-your-vote/", {:count=>100})
 
 puts sr.count.to_s + " tweets found"
 
@@ -72,7 +72,7 @@ sr.each { |t|
 
     puts t.url
     puts t.text
-    puts "#{t.user.followers_count} followers, from #{t.user.location}"
+    puts "#{t.user.followers_count} followers, from #{t.user.location} (#{t.geo}), #{t.user.url}"
 
     puts
     print "Did you reply to this tweet? y/n/q "
