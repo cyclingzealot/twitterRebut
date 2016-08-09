@@ -51,3 +51,4 @@ build-iPhoneSimulator/
 
 *.sw?
 clientConf.rb
+.byebug_history
