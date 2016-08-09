@@ -28,7 +28,14 @@ else
 end
 
 
-sr = client.search("http://www.conservative.ca/cpc/protect-your-vote/", {:count=>100})
+sr = client.search("conservative.ca/cpc/protect-your-vote", {:count=>100}).to_set
+
+sr2 =  client.search("demandareferendum.ca", {:count=>100}).to_set
+
+sr3 = client.search("#DemandAReferendum", {:count=>100}).to_set
+
+sr.merge(sr2)
+sr.merge(sr3)
 
 puts sr.count.to_s + " tweets found"
 
@@ -60,7 +67,33 @@ if File.file?(commHistoryPath)
     }
 end
 
+#debugger
+
+
+
+listPath = '/tmp/listOfTweets.tsv'
+printf "Writting to file  #{listPath}...."
+list = File.open(listPath, 'w');
+list.printf("%s\t%s\t%s\t%s\t%s\t%s\t%s\n", 'Tweet Id', 'Username', 'Url', 'Retweet URL', 'Followers', 'Location', 'Text')
+sr.each { |t|
+    if alreadyReplied.include?(t.id.to_i)
+        next
+    end
+    list.printf("%s\t@%s\t%s\t%s\t%s\t%s\t%s\n", t.id, t.user.screen_name, t.url, t.retweeted_tweet.url, t.user.followers_count, t.user.location, t.text)
+
+}
+list.close
+printf "... Done."
+
+puts
+puts `head #{listPath}`
+puts
+
+
+
 c = File.open(commHistoryPath, 'a');
+
+
 
 sr.each { |t|
     puts '=' * 72
@@ -92,5 +125,9 @@ sr.each { |t|
 }
 
 puts sr.first.methods.sort.join("\t")
+
+puts
+
+puts sr.first.user.methods.sort.join("\t")
 
 c.close
