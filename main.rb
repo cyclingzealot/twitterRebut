@@ -39,15 +39,6 @@ sr.merge(sr3)
 
 puts sr.count.to_s + " tweets found"
 
-"""
-f = sr.first
-puts f
-puts f.methods.sort.join(', ')
-puts f.id
-puts f.url
-puts f.text
-"""
-
 sr = sr.sort_by {|t|
     t.user.followers_count
 }
@@ -72,19 +63,27 @@ end
 
 
 listPath = '/tmp/listOfTweets.tsv'
-printf "Writting to file  #{listPath}...."
+printf "Writting to file  #{listPath} ...."
 list = File.open(listPath, 'w');
 list.printf("%s\t%s\t%s\t%s\t%s\t%s\t%s\n", 'Tweet Id', 'Username', 'Url', 'Retweet URL', 'Followers', 'Location', 'Text')
 sr.each { |t|
-    if alreadyReplied.include?(t.id.to_i)
+    if ! t.geo.nil?
+        puts "FYI, Non-null tweet geo: #{t.geo} #{t.url}"
+    end
+
+    if alreadyReplied.include?(t.id.to_i) or t.user.location.include?("Alberta") or t.user.followers_count > 300
         next
     end
     list.printf("%s\t@%s\t%s\t%s\t%s\t%s\t%s\n", t.id, t.user.screen_name, t.url, t.retweeted_tweet.url, t.user.followers_count, t.user.location, t.text)
+
 
 }
 list.close
 printf "... Done."
 
+
+puts
+puts "Sample file"
 puts
 puts `head #{listPath}`
 puts
@@ -105,7 +104,7 @@ sr.each { |t|
 
     puts t.url
     puts t.text
-    puts "#{t.user.followers_count} followers, from #{t.user.location} (#{t.geo}), #{t.user.url}"
+    puts "#{t.user.followers_count} followers, @#{t.user.screen_name} from #{t.user.location} (#{t.geo}), #{t.user.url}"
 
     puts
     print "Did you reply to this tweet? y/n/q "
