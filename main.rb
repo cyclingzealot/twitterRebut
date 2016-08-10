@@ -121,7 +121,7 @@ end
 listPath = '/tmp/listOfTweets.tsv'
 printf "Writting to file  #{listPath} ...."
 list = File.open(listPath, 'w');
-list.printf("%s\t%s\t\t%s\t%s\t%s\t%s\t%s\t%s\n", 'Tweet Id', 'Username', 'Url', "Message", 'Retweet URL', 'Followers', 'Location', 'Text')
+list.printf("%s\t%s\t%s\t%s\t%s\t%s\t%s\n", 'Tweet Id', 'Username', 'Url', "Your message", 'Followers', 'Location', 'Text')
 sr.each { |t|
     if ! t.geo.nil?
         puts "FYI, Non-null tweet geo: #{t.geo} #{t.url}"
@@ -130,7 +130,7 @@ sr.each { |t|
     if alreadyReplied.include?(t.id.to_i) or t.user.location.include?("Alberta") or t.user.followers_count > 300
         next
     end
-    list.printf("%s\t@%s\t%s\t%s\t\t%s\t%s\t%s\t%s\n", t.id, t.user.screen_name, t.url, determineMessage(t.user.screen_name), t.retweeted_tweet.url, t.user.followers_count, t.user.location, t.text)
+    list.printf("%s\t@%s\t%s\t%s\t%s\t%s\t%s\n", t.id, t.user.screen_name, t.url, determineMessage(t.user.screen_name), t.user.followers_count, t.user.location, t.text)
 
 
 }
