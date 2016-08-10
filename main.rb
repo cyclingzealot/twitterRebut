@@ -13,9 +13,15 @@ require 'byebug'
 
 def determineMessage(screenName)
     messages = Array.new
+    messages.push("Proportionality would increase number of effective votes for all Canadians, including CPC votes #fairvote #voterequality")
+    messages.push("Proportionality would increase number of effective votes for all Canadians, including CPC votes #voterequality")
+    messages.push("Proportionality would increase number of effective votes for all Canadians, including CPC votes #fairvote")
     messages.push("Proportionality would increase number of effective votes, including CPC votes #fairvote #voterequality")
     messages.push("Proportionality would increase number of effective votes, including CPC votes #voterequality")
     messages.push("Proportionality would increase number of effective votes, including CPC votes #fairvote")
+    messages.push("Proportionality would increase nb of effective votes for all Canadians, including CPC votes #voterequality #fairvote")
+    messages.push("Proportionality would increase nb of effective votes for all Canadians, including CPC votes #voterequality")
+    messages.push("Proportionality would increase nb of effective votes for all Canadians, including CPC votes #fairvote")
     messages.push("Proportionality would increase nb of effective votes, including CPC votes #fairvote #voterequality")
     messages.push("Proportionality would increase nb of effective votes, including CPC votes #voterequality")
     messages.push("Proportionality would increase nb of effective votes, including CPC votes #fairvote")
