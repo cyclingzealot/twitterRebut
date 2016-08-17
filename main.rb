@@ -109,8 +109,13 @@ alreadyReplied = []
 puts "Opening already replied to tweets...."
 if File.file?(commHistoryPath)
     File.foreach(commHistoryPath) { |l|
+        username = l.strip
+        if !(/[1-9][0-9]*/).match(l.strip).nil?
+                t = Twitter::Tweet.new({:id => l.strip.to_i})
+                username = t.user.screen_name if ! t.nil?
+        end
         ### Don't reply again to tweets already replied to
-        alreadyReplied.push(l.strip.to_i)
+        alreadyReplied.push(username.strip)
     }
 end
 
@@ -153,7 +158,7 @@ c = File.open(commHistoryPath, 'a');
 sr.each { |t|
     puts '=' * 72
     puts
-    if alreadyReplied.include?(t.id.to_i)
+    if alreadyReplied.include?(t.user.screen_name)
         $stderr.puts "Already replied to #{t.text}"
         $stderr.puts "#{t.url}"
         next
@@ -173,7 +178,7 @@ sr.each { |t|
 
     #byebug
     if yn == 'y'
-        str = "#{t.id}"
+        str = "#{t.user.screen_name}"
         $stderr.puts "Adding #{str} to #{commHistoryPath}"
         c.puts str
     elsif yn == 'q'
