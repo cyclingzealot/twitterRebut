@@ -9,11 +9,19 @@ require 'rubygems'
 require 'twitter'
 require 'byebug'
 
+@appDir = File.expand_path("~") + '/.twitterRebutAssist/'
+
 def determineMessage(screenName)
     messages = Array.new
+    messages.push("Proportionality would increase number of effective votes for all Canadians, including CPC votes #fairvote #voterequality")
+    messages.push("Proportionality would increase number of effective votes for all Canadians, including CPC votes #voterequality")
+    messages.push("Proportionality would increase number of effective votes for all Canadians, including CPC votes #fairvote")
     messages.push("Proportionality would increase number of effective votes, including CPC votes #fairvote #voterequality")
     messages.push("Proportionality would increase number of effective votes, including CPC votes #voterequality")
     messages.push("Proportionality would increase number of effective votes, including CPC votes #fairvote")
+    messages.push("Proportionality would increase nb of effective votes for all Canadians, including CPC votes #voterequality #fairvote")
+    messages.push("Proportionality would increase nb of effective votes for all Canadians, including CPC votes #voterequality")
+    messages.push("Proportionality would increase nb of effective votes for all Canadians, including CPC votes #fairvote")
     messages.push("Proportionality would increase nb of effective votes, including CPC votes #fairvote #voterequality")
     messages.push("Proportionality would increase nb of effective votes, including CPC votes #voterequality")
     messages.push("Proportionality would increase nb of effective votes, including CPC votes #fairvote")
@@ -22,7 +30,7 @@ def determineMessage(screenName)
     messages.each { |s|
         tryMessage = "@#{screenName} #{s}"
 
-        if tryMessage.length <= 116
+        if tryMessage.length <= 115
             finalMessage = tryMessage
             break
         end
@@ -31,9 +39,10 @@ def determineMessage(screenName)
     return finalMessage
 end
 
-appDir = File.expand_path("~") + '/.twitterRebutAssist/'
 
-str = appDir + '/clientConf.rb'
+
+
+str = @appDir + '/clientConf.rb'
 if ! File.exists?(str)
     $stderr.puts "Need a file at #{str}"
 end
@@ -102,63 +111,68 @@ sr = sr.sort {|a,b|
 ### Now let's read the communication history file
 
 
-commHistoryPath = appDir + '/commHistory.txt'
+def readHistoryFile(commHistoryPath)
+	alreadyReplied = []
 
-alreadyReplied = []
+	puts "Opening already replied to tweets...."
+	if File.file?(commHistoryPath)
+		File.foreach(commHistoryPath) { |l|
+		    username = l.strip
+		    if !(/^[1-9][0-9]*$/).match(l.strip).nil?
+		            t = Twitter::Tweet.new({:id => l.strip.to_i})
+		            username = t.user.screen_name
+		    end
+		    ### Don't reply again to tweets already replied to
+		    if ! username.nil?
+                alreadyReplied.push(username.strip)
+            else
+                alreadyReplied.push(l.strip.to_i)
+            end
+		}
+	end
 
-puts "Opening already replied to tweets...."
-if File.file?(commHistoryPath)
-    File.foreach(commHistoryPath) { |l|
-        username = l.strip
-        if !(/[1-9][0-9]*/).match(l.strip).nil?
-                t = Twitter::Tweet.new({:id => l.strip.to_i})
-                username = t.user.screen_name if ! t.nil?
-        end
-        ### Don't reply again to tweets already replied to
-        alreadyReplied.push(username.strip)
-    }
+    return alreadyReplied
 end
 
-#debugger
+
+def writeFile(sr, alreadyReplied)
+	listPath = '/tmp/listOfTweets.tsv'
+	printf "Writting to file  #{listPath} ...."
+	list = File.open(listPath, 'w');
+	list.printf("%s\t%s\t%s\t%s\t%s\t%s\t%s\n", 'Tweet Id', 'Username', 'Url', "Your message", 'Followers', 'Location', 'Text')
+	sr.each { |t|
+	    if ! t.geo.nil?
+	        puts "FYI, Non-null tweet geo: #{t.geo} #{t.url}"
+	    end
+
+	    if alreadyReplied.include?(t.user.screen_name) or alreadyReplied.include?(t.id) or t.user.location.include?("Alberta") or t.user.followers_count > 300 or t.user.screen_name.include?("CPC") or t.user.screen_name.include?("EDA")
+	        next
+	    end
+	    list.printf("%s\t@%s\t%s\t%s\t%s\t%s\t%s\n", t.id, t.user.screen_name, t.url, determineMessage(t.user.screen_name), t.user.followers_count, t.user.location, t.text)
 
 
+	}
+	list.close
+	printf "... Done."
 
-listPath = '/tmp/listOfTweets.tsv'
-printf "Writting to file  #{listPath} ...."
-list = File.open(listPath, 'w');
-list.printf("%s\t%s\t%s\t%s\t%s\t%s\t%s\n", 'Tweet Id', 'Username', 'Url', "Your message", 'Followers', 'Location', 'Text')
-sr.each { |t|
-    if ! t.geo.nil?
-        puts "FYI, Non-null tweet geo: #{t.geo} #{t.url}"
-    end
-
-    if alreadyReplied.include?(t.id.to_i) or t.user.location.include?("Alberta") or t.user.followers_count > 300
-        next
-    end
-    list.printf("%s\t@%s\t%s\t%s\t%s\t%s\t%s\n", t.id, t.user.screen_name, t.url, determineMessage(t.user.screen_name), t.user.followers_count, t.user.location, t.text)
+	puts
+	puts "Sample file"
+	puts
+	puts `head #{listPath}`
+	puts
+    puts "See #{listPath}"
+    puts
+end
 
 
-}
-list.close
-printf "... Done."
-
-
-puts
-puts "Sample file"
-puts
-puts `head #{listPath}`
-puts
-
-
-
+commHistoryPath = @appDir + '/commHistory.txt'
+alreadyReplied = readHistoryFile(commHistoryPath)
 c = File.open(commHistoryPath, 'a');
-
-
 
 sr.each { |t|
     puts '=' * 72
     puts
-    if alreadyReplied.include?(t.user.screen_name)
+    if alreadyReplied.include?(t.user.screen_name) or alreadyReplied.include?(t.id)
         $stderr.puts "Already replied to #{t.text}"
         $stderr.puts "#{t.url}"
         next
@@ -196,5 +210,9 @@ puts
 puts sr.first.user.methods.sort.join("\t")
 
 c.close
+
+
+alreadyReplied = readHistoryFile(commHistoryPath)
+writeFile(sr, alreadyReplied)
 
 
