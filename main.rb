@@ -13,6 +13,19 @@ require 'byebug'
 
 def determineMessage(screenName)
     messages = Array.new
+
+=begin
+    messages.push("What politicians shouldn't have is 100% power with ~40% of votes. Legislature should reflect the vote #voterequality #cdnpoli #fairvote #ERRE")
+    messages.push("What politicians shouldn't have is 100% power with ~40% of votes. Legislature should reflect the vote #voterequality #cdnpoli #fairvote")
+    messages.push("What politicians shouldn't have is 100% power with ~40% of votes. Legislature should reflect the vote #voterequality #fairvote")
+    messages.push("What politicians shouldn't have is 100% power with ~40% of votes. Legislature should reflect the vote #voterequality")
+    messages.push("What politicians shouldn't have is 100% power with ~40% of votes. Legislature should reflect the vote #fairvote")
+    messages.push("What politicians shouldn't have: 100% power with ~40% of vote. Legislature should reflect the vote #fairvote")
+    messages.push("What politicians shouldn't have: 100% power with ~40% of vote. Legislature should reflect vote #fairvote")
+    messages.push("Politicians shouldn't have 100% power with ~40% of vote. Legislature should reflect the vote #fairvote")
+    messages.push("Politicians shouldn't have 100% power with ~40% of vote. Legislature should reflect vote #fairvote")
+=end
+
     messages.push("Proportionality would increase number of effective votes for all Canadians, including CPC votes #fairvote #voterequality")
     messages.push("Proportionality would increase number of effective votes for all Canadians, including CPC votes #voterequality")
     messages.push("Proportionality would increase number of effective votes for all Canadians, including CPC votes #fairvote")
