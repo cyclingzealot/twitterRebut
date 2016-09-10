@@ -73,14 +73,14 @@ end
 
 
 puts "Getting search results..."
-sr = client.search("conservative.ca/cpc/protect-your-vote", {:count=>100}).to_set
+searchTerms = ["conservative.ca/cpc/protect-your-vote", "demandareferendum.ca", "#DemandAReferendum"]
 
-sr2 =  client.search("demandareferendum.ca", {:count=>100}).to_set
-
-sr3 = client.search("#DemandAReferendum", {:count=>100}).to_set
-
-sr.merge(sr2)
-sr.merge(sr3)
+sr = Set.new
+searchTerms.each { |st|
+    srSub = client.search(st, {:count=>100}).to_set
+    puts "#{srSub.count} results found for search terms '#{st}...'"
+    sr.merge(srSub)
+}
 
 puts sr.count.to_s + " tweets found"
 
