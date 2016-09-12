@@ -73,7 +73,7 @@ end
 
 
 puts "Getting search results..."
-searchTerms = ["conservative.ca/cpc/protect-your-vote", "demandareferendum.ca", "#DemandAReferendum", "ronaambrose/videos/10153984927048525/"]
+searchTerms = ["conservative.ca/cpc/protect-your-vote", "demandareferendum.ca", "#DemandAReferendum", "ronaambrose/videos/10153984927048525/", "Liberals' electoral reform debate denies Canadians their say"]
 
 sr = Set.new
 searchTerms.each { |st|
