@@ -43,7 +43,7 @@ def determineMessage(screenName)
     messages.each { |s|
         tryMessage = "@#{screenName} #{s}"
 
-        if tryMessage.length <= 115
+        if tryMessage.length <= 140
             finalMessage = tryMessage
             break
         end
